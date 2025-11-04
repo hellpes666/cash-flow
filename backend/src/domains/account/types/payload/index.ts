@@ -1,1 +1,1 @@
-export {} from './';
+export * from './create-bank-account.dto';

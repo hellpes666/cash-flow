@@ -10,4 +10,24 @@ datasource db {
 
 model Test {
   id String @id @default(uuid())
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+}
+
+model BankAccount {
+  id String @id @default(uuid())
+
+  userId       String
+  name         String
+  type         BankAccountType @default(BANK)
+  initialValue Int             @default(0)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+}
+
+enum BankAccountType {
+  BANK
+  CASH
 }
