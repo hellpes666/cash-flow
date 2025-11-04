@@ -49,7 +49,7 @@ export class AccountService {
 		};
 	}
 
-	private async getBankAccountById(
+	public async getBankAccountById(
 		id: string
 	): AsyncServiceResponseType<BankAccount> {
 		const bankAccount = await this.prismaService.bankAccount.findUnique({

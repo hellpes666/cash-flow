@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 
 import { BankAccount } from 'prisma/generated/prisma';
 import { AsyncServiceResponseType } from 'src/types';
@@ -18,5 +18,12 @@ export class AccountController {
 			await this.accountService.createBankAccount(dto);
 
 		return createdBankAccount;
+	}
+
+	@Get('/:id')
+	public async getBankAccount(@Param('id') id: string) {
+		const bankAccount = await this.accountService.getBankAccountById(id);
+
+		return bankAccount;
 	}
 }
