@@ -4,7 +4,7 @@ import { BankAccount } from 'prisma/generated/prisma';
 import { PrismaService } from 'src/lib';
 import { AsyncServiceResponseType } from 'src/types';
 
-import { CreateBankAccountPayload } from './types';
+import { CreateBankAccountPayload, UpdateBankAccountPayload } from './types';
 
 @Injectable()
 export class AccountService {
@@ -15,6 +15,24 @@ export class AccountService {
 		payload: CreateBankAccountPayload
 	): AsyncServiceResponseType<BankAccount> {
 		const bankAccount = await this.prismaService.bankAccount.create({
+			data: {
+				...payload,
+			},
+		});
+
+		return {
+			isSuccess: true,
+			data: bankAccount,
+		};
+	}
+
+	public async updateBankAccount(
+		payload: UpdateBankAccountPayload
+	): AsyncServiceResponseType<BankAccount> {
+		const bankAccount = await this.prismaService.bankAccount.update({
+			where: {
+				id: payload.id,
+			},
 			data: {
 				...payload,
 			},
