@@ -1,1 +1,1 @@
-export {} from './';
+export * from './transfer-value-between-bank-accounts.dto';

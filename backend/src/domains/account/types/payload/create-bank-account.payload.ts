@@ -5,5 +5,5 @@ export interface CreateBankAccountPayload {
 	name: string;
 	type: BankAccountType;
 
-	initialValue?: number;
+	balance?: number;
 }
