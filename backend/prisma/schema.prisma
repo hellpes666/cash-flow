@@ -18,10 +18,10 @@ model Test {
 model BankAccount {
   id String @id @default(uuid())
 
-  userId       String
-  name         String
-  type         BankAccountType @default(BANK)
-  initialValue Int             @default(0)
+  userId  String
+  name    String
+  type    BankAccountType @default(BANK)
+  balance Int             @default(0)
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

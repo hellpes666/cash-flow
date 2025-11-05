@@ -23,5 +23,5 @@ export class CreateBankAccountDto {
 
 	@IsOptional()
 	@IsNumber()
-	initialValue?: number;
+	balance?: number;
 }
