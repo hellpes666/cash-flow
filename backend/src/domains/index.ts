@@ -1,5 +1,5 @@
 export * from './account';
 export * from './actions';
-export * from './auth'; 
+export * from './auth';
 export * from './integrations';
 export * from './user';

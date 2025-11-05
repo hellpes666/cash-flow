@@ -2,7 +2,7 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
 import * as bodyParser from 'body-parser';
-import * as cookieParser from 'cookie-parser';
+import cookieParser from 'cookie-parser';
 
 import { AppModule } from './app.module';
 
@@ -11,9 +11,11 @@ async function bootstrap() {
 		logger: ['error', 'warn', 'log', 'debug', 'verbose'],
 	});
 
+	const cookies = cookieParser();
+
 	app.use(bodyParser.json({ limit: '10mb' }));
 	app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
-	app.use(cookieParser());
+	app.use(cookies);
 
 	app.useGlobalPipes(
 		new ValidationPipe({
@@ -34,4 +36,5 @@ async function bootstrap() {
 	const logger = new Logger('Bootstrap');
 	logger.log(`🚀 Server is running on http://localhost:${port}`);
 }
+
 bootstrap();
