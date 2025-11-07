@@ -1,0 +1,2 @@
+export const PLUS_NUMBER_MULTIPLICATOR = 1;
+export const MINUS_NUMBER_MULTIPLICATOR = -1;

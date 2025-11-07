@@ -23,11 +23,77 @@ model BankAccount {
   type    BankAccountType @default(BANK)
   balance Int             @default(0)
 
+  transactions TransactionAction[]
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("bank_accounts")
+}
+
+model TransactionAction {
+  id String @id @default(uuid())
+
+  userId String
+  value  Int
+
+  comment String?
+
+  type TransactionType
+
+  categoryId String?              @map("category_id") @default("")
+  category   TransactionCategory? @relation(fields: [categoryId], references: [id])
+
+  tagId String?         @map("tag_id") @default("")
+  tag   TransactionTag? @relation(fields: [tagId], references: [id])
+
+  bankAccountId String      @map("bank_account_id")
+  bankAccount   BankAccount @relation(fields: [bankAccountId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("transaction_actions")
+}
+
+model TransactionCategory {
+  id String @id @default(uuid())
+
+  name  String
+  icon  String?
+  color String?
+
+  actions TransactionAction[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("transaction_categories")
+}
+
+model TransactionTag {
+  id String @id @default(uuid())
+
+  name String
+
+  actions TransactionAction[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("transaction_tags")
+}
+
+enum TransactionType {
+  income
+  expense
+
+  @@map("transaction_types")
 }
 
 enum BankAccountType {
   BANK
   CASH
+
+  @@map("bank_account_types")
 }

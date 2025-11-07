@@ -1,11 +1,22 @@
 import { Injectable } from '@nestjs/common';
 
+import { TransactionAction, TransactionType } from 'prisma/generated/prisma';
 import { PrismaService } from 'src/lib';
-import { AsyncSuccessServiceResponse } from 'src/types';
+import {
+	AsyncServiceResponseType,
+	AsyncSuccessServiceResponse,
+} from 'src/types';
 
 import { AccountService } from '../account';
 
-import { TransferValueBetweenBankAccountsPayload } from './types';
+import {
+	MINUS_NUMBER_MULTIPLICATOR,
+	PLUS_NUMBER_MULTIPLICATOR,
+} from './consts';
+import {
+	TransactionPayload,
+	TransferValueBetweenBankAccountsPayload,
+} from './types';
 
 @Injectable()
 export class ActionsService {
@@ -59,6 +70,48 @@ export class ActionsService {
 			// 	where: { id: payload.toId },
 			// 	data: { balance: { increment: payload.amount } },
 			// });
+		});
+	}
+
+	public async transactionAction(
+		transactionType: TransactionType,
+		payload: TransactionPayload
+	): AsyncServiceResponseType<TransactionAction> {
+		const isIncome = transactionType === 'income';
+
+		return await this.prismaService.$transaction(async (prismaClient) => {
+			const bankAccount = await this.accountService.getBankAccountById(
+				payload.bankAccountId
+			);
+
+			if (bankAccount.isSuccess) {
+				const bankAccountData = bankAccount.data;
+				const multiplicator = isIncome
+					? PLUS_NUMBER_MULTIPLICATOR
+					: MINUS_NUMBER_MULTIPLICATOR;
+
+				const newBalance =
+					bankAccountData.balance + multiplicator * payload.value;
+
+				await prismaClient.bankAccount.update({
+					where: { id: payload.bankAccountId },
+					data: { balance: newBalance },
+				});
+
+				const data = await prismaClient.transactionAction.create({
+					data: {
+						type: transactionType,
+						...payload,
+					},
+				});
+
+				return { isSuccess: true, data };
+			}
+
+			return {
+				isSuccess: false,
+				errorMessage: `Не получилось провести операцию: ${bankAccount.errorMessage}`,
+			};
 		});
 	}
 }

@@ -17,7 +17,8 @@ import { PrismaModule } from './lib';
 			envFilePath: ['.env'],
 			isGlobal: true,
 		}),
-		UserModule,
+
+		    UserModule,
 		IntegrationsModule,
 		ActionsModule,
 		AccountModule,

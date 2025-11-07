@@ -1,7 +1,9 @@
-import { Body, Controller, Patch } from '@nestjs/common';
+import { Body, Controller, Param, Patch, Post } from '@nestjs/common';
+
+import { TransactionType } from 'prisma/generated/prisma';
 
 import { ActionsService } from './actions.service';
-import { TransferValueBetweenBankAccountsDto } from './types';
+import { TransactionDto, TransferValueBetweenBankAccountsDto } from './types';
 
 @Controller('actions')
 export class ActionsController {
@@ -12,5 +14,13 @@ export class ActionsController {
 		@Body() dto: TransferValueBetweenBankAccountsDto
 	) {
 		return await this.actionsService.transferValueBetweenBankAccounts(dto);
+	}
+
+	@Post('transaction/:action')
+	public async transferValue(
+		@Param('action') action: TransactionType,
+		@Body() dto: TransactionDto
+	) {
+		return await this.actionsService.transactionAction(action, dto);
 	}
 }
