@@ -22,7 +22,7 @@ import { PrismaModule } from './lib';
 		    UserModule,
 		    IntegrationsModule,
 		    ActionsModule,
-		AccountModule,
+		    AccountModule,
 		AuthModule,
 	],
 	controllers: [],
