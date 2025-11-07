@@ -72,10 +72,9 @@
 		}
 	},
 	"lint-staged": {
-		"*.ts": [
-			"npm run format",
-			"npm run lint",
-			"git add ."
+		"**/*.ts": [
+			"prettier --write",
+			"eslint --fix"
 		]
 	},
 	"jest": {
