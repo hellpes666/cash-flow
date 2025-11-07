@@ -20,7 +20,7 @@ import { PrismaModule } from './lib';
 		}),
 
 		    UserModule,
-		IntegrationsModule,
+		    IntegrationsModule,
 		ActionsModule,
 		AccountModule,
 		AuthModule,

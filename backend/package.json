@@ -75,7 +75,7 @@
 		"*.ts": [
 			"npm run format",
 			"npm run lint",
-			"git add"
+			"git add ."
 		]
 	},
 	"jest": {
