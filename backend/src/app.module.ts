@@ -12,8 +12,9 @@ import { PrismaModule } from './lib';
 
 @Module({
 	imports: [
-		PrismaModule,
-		ConfigModule.forRoot({
+        PrismaModule,
+        
+		    ConfigModule.forRoot({
 			envFilePath: ['.env'],
 			isGlobal: true,
 		}),
