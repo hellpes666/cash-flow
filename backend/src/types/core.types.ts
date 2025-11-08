@@ -1,7 +1,14 @@
-interface ISuccessServiceResponse<T> {
+interface ISuccessServiceFullResponse<T> {
 	isSuccess: true;
 	data: T;
 }
+
+export interface ISuccessServiceResponse {
+	isSuccess: true;
+}
+
+export type AsyncSuccessServiceResponse = Promise<ISuccessServiceResponse>;
+
 interface IErrorServiceResponse {
 	isSuccess: false;
 	errorMessage: string;
@@ -9,7 +16,7 @@ interface IErrorServiceResponse {
 }
 
 export type ServiceResponseType<T> =
-	| ISuccessServiceResponse<T>
+	| ISuccessServiceFullResponse<T>
 	| IErrorServiceResponse;
 
 export type AsyncServiceResponseType<T> = Promise<ServiceResponseType<T>>;
