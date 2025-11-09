@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 
+import { BankAccount } from 'prisma/generated/prisma';
 import { PrismaService } from 'src/lib';
 import { AsyncServiceResponseType } from 'src/types';
-
-import { BankAccount } from 'prisma/generated/prisma';
 
 import { CreateBankAccountPayload, UpdateBankAccountPayload } from './types';
 

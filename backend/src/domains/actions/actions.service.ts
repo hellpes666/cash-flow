@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
 
+import { TransactionAction, TransactionType } from 'prisma/generated/prisma';
 import { PrismaService } from 'src/lib';
 import {
 	AsyncServiceResponseType,
 	AsyncSuccessServiceResponse,
 } from 'src/types';
-
-import { TransactionAction, TransactionType } from 'prisma/generated/prisma';
 
 import { AccountService } from '../account';
 

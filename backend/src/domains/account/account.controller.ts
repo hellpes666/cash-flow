@@ -1,8 +1,7 @@
 import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 
-import { AsyncServiceResponseType } from 'src/types';
-
 import { BankAccount } from 'prisma/generated/prisma';
+import { AsyncServiceResponseType } from 'src/types';
 
 import { AccountService } from './account.service';
 import { CreateBankAccountDto, UpdateBankAccountDto } from './types';
