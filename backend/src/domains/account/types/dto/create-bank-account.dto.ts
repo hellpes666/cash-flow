@@ -6,6 +6,7 @@ import {
 	IsString,
 	IsUUID,
 } from 'class-validator';
+
 import { BankAccountType } from 'prisma/generated/prisma';
 
 export class CreateBankAccountDto {

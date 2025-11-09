@@ -7,6 +7,14 @@ export interface ISuccessServiceResponse {
 	isSuccess: true;
 }
 
+interface IFailedServiceResponse {
+	isSuccess: false;
+}
+
+export type StatusServiceResponseType =
+	| ISuccessServiceResponse
+	| IFailedServiceResponse;
+
 export type AsyncSuccessServiceResponse = Promise<ISuccessServiceResponse>;
 
 interface IErrorServiceResponse {
