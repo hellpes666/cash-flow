@@ -1,5 +1,6 @@
 import Link from 'next/link';
 
+import { PageRoutes } from '@shared/constants';
 import { Button, ButtonGroup, TypographyH1, TypographyLead } from '@shared/ui';
 
 export default function Home() {
@@ -19,7 +20,7 @@ export default function Home() {
 
 			<ButtonGroup className="mt-6">
 				<ButtonGroup>
-					<Link href={'/cash-flow'}>
+					<Link href={PageRoutes.CASH_FLOW_PAGE}>
 						<Button variant="secondary" size="lg">
 							Попробовать бесплатно
 						</Button>

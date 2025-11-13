@@ -1,5 +1,6 @@
 import Link from 'next/link';
 
+import { PageRoutes } from '@shared/constants';
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from '@shared/ui';
 
 export const NotFoundGlobalContent = () => {
@@ -14,8 +15,7 @@ export const NotFoundGlobalContent = () => {
 			</EmptyHeader>
 			<EmptyContent>
 				<EmptyDescription>
-					Need help? <a href="#">Contact support</a> <br />
-					Or you can go on <Link href={'/'}>home page</Link>
+					You can go on <Link href={PageRoutes.MAIN_PAGE}>home page</Link>
 				</EmptyDescription>
 			</EmptyContent>
 		</Empty>
