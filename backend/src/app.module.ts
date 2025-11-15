@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 
 import {
 	AccountModule,
@@ -16,6 +17,11 @@ import { PrismaModule } from './lib';
 		ConfigModule.forRoot({
 			envFilePath: ['.env'],
 			isGlobal: true,
+		}),
+		JwtModule.register({
+			secret: 'hard!to-guess_secret',
+			signOptions: { expiresIn: '60m' },
+			global: true,
 		}),
 		UserModule,
 		IntegrationsModule,

@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 
-import { TransactionAction, TransactionType } from 'prisma/generated/prisma';
+import {
+	Prisma,
+	TransactionAction,
+	TransactionType,
+	UserGoal,
+} from 'prisma/generated/prisma';
 import { PrismaService } from 'src/lib';
 import {
 	AsyncServiceResponseType,
@@ -14,8 +19,10 @@ import {
 	PLUS_NUMBER_MULTIPLICATOR,
 } from './consts';
 import {
+	SetGoalPayload,
 	TransactionPayload,
 	TransferValueBetweenBankAccountsPayload,
+	UpdateSetGoalPayload,
 } from './types';
 
 @Injectable()
@@ -26,14 +33,17 @@ export class ActionsService {
 	) {}
 
 	public async transferValueBetweenBankAccounts(
-		payload: TransferValueBetweenBankAccountsPayload
+		payload: TransferValueBetweenBankAccountsPayload,
+		userId: string
 	): AsyncSuccessServiceResponse {
 		return await this.prismaService.$transaction(async (prismaClient) => {
 			const fromAccount = await this.accountService.getBankAccountById(
-				payload.fromId
+				payload.fromId,
+				userId
 			);
 			const toAccount = await this.accountService.getBankAccountById(
-				payload.toId
+				payload.toId,
+				userId
 			);
 
 			if (fromAccount.isSuccess && toAccount.isSuccess) {
@@ -75,13 +85,15 @@ export class ActionsService {
 
 	public async transactionAction(
 		transactionType: TransactionType,
-		payload: TransactionPayload
+		payload: TransactionPayload,
+		userId: string
 	): AsyncServiceResponseType<TransactionAction> {
 		const isIncome = transactionType === 'income';
 
 		return await this.prismaService.$transaction(async (prismaClient) => {
 			const bankAccount = await this.accountService.getBankAccountById(
-				payload.bankAccountId
+				payload.bankAccountId,
+				userId
 			);
 
 			if (bankAccount.isSuccess) {
@@ -113,5 +125,82 @@ export class ActionsService {
 				errorMessage: `Не получилось провести операцию: ${bankAccount.errorMessage}`,
 			};
 		});
+	}
+
+	//TODO: добавить после нотификашек сюда каждый месяц услонво
+	public async setGoal(
+		payload: SetGoalPayload,
+		userId: string
+	): AsyncServiceResponseType<UserGoal> {
+		const setGoal = await this.prismaService.userGoal.create({
+			data: {
+				...payload,
+				userId,
+			},
+		});
+
+		if (setGoal) {
+			return {
+				isSuccess: true,
+				data: setGoal,
+			};
+		}
+
+		return {
+			isSuccess: false,
+			errorMessage:
+				'Не удалось создать цель! Пожалуйста, попробуйте снова',
+		};
+	}
+
+	public async updateSetGoal(
+		payload: UpdateSetGoalPayload,
+		userId: string
+	): AsyncServiceResponseType<UserGoal> {
+		const userGoal = await this.findSetGoal({ userId, id: payload.id });
+
+		if (!userGoal.isSuccess) {
+			return userGoal;
+		}
+
+		const updatedUserGoal = await this.prismaService.userGoal.update({
+			where: {
+				id: userGoal.data.id,
+			},
+
+			data: {
+				...payload,
+			},
+		});
+
+		if (updatedUserGoal) {
+			return {
+				isSuccess: true,
+				data: updatedUserGoal,
+			};
+		}
+
+		return { isSuccess: false, errorMessage: 'Не удалось обновить цель' };
+	}
+
+	//TODO вынести во что-то общее
+	private async findSetGoal(
+		query: Prisma.UserGoalWhereUniqueInput
+	): AsyncServiceResponseType<UserGoal> {
+		const userGoal = await this.prismaService.userGoal.findUnique({
+			where: query,
+		});
+
+		if (userGoal) {
+			return {
+				isSuccess: true,
+				data: userGoal,
+			};
+		}
+
+		return {
+			isSuccess: false,
+			errorMessage: 'Цель не найдена',
+		};
 	}
 }

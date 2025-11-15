@@ -10,13 +10,14 @@ import { CreateBankAccountPayload, UpdateBankAccountPayload } from './types';
 export class AccountService {
 	public constructor(private readonly prismaService: PrismaService) {}
 
-	//TODO после реги добавить сюда проверку на пользвоаетля
 	public async createBankAccount(
-		payload: CreateBankAccountPayload
+		payload: CreateBankAccountPayload,
+		userId: string
 	): AsyncServiceResponseType<BankAccount> {
 		const bankAccount = await this.prismaService.bankAccount.create({
 			data: {
 				...payload,
+				userId,
 			},
 		});
 
@@ -27,11 +28,13 @@ export class AccountService {
 	}
 
 	public async updateBankAccount(
-		payload: UpdateBankAccountPayload
+		payload: UpdateBankAccountPayload,
+		userId: string
 	): AsyncServiceResponseType<BankAccount> {
 		const bankAccount = await this.prismaService.bankAccount.update({
 			where: {
 				id: payload.id,
+				userId,
 			},
 			data: {
 				...payload,
@@ -45,9 +48,10 @@ export class AccountService {
 	}
 
 	public async deleteBankAccount(
-		id: string
+		id: string,
+		userId: string
 	): AsyncServiceResponseType<BankAccount> {
-		const bankAccount = await this.getBankAccountById(id);
+		const bankAccount = await this.getBankAccountById(id, userId);
 
 		if (bankAccount.isSuccess) {
 			const deletedBankAccount =
@@ -68,11 +72,13 @@ export class AccountService {
 	}
 
 	public async getBankAccountById(
-		id: string
+		id: string,
+		userId: string
 	): AsyncServiceResponseType<BankAccount> {
 		const bankAccount = await this.prismaService.bankAccount.findUnique({
 			where: {
 				id,
+				userId,
 			},
 		});
 
