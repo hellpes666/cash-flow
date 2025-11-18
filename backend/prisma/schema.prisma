@@ -76,10 +76,10 @@ model TransactionAction {
 
   type TransactionType
 
-  categoryId String?              @default("") @map("category_id")
+  categoryId String?              @map("category_id")
   category   TransactionCategory? @relation(fields: [categoryId], references: [id])
 
-  tagId String?         @default("") @map("tag_id")
+  tagId String?         @map("tag_id")
   tag   TransactionTag? @relation(fields: [tagId], references: [id])
 
   bankAccountId String      @map("bank_account_id")

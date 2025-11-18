@@ -164,7 +164,7 @@ export class AuthService {
 		const payloadJwt = { email, id: userId };
 
 		const accessToken = await this.jwtService.signAsync(payloadJwt, {
-			expiresIn: '15m',
+			expiresIn: '60m',
 		});
 
 		const refreshToken = await this.jwtService.signAsync(payloadJwt, {

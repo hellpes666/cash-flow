@@ -53,13 +53,9 @@ export class AccountController {
 
 	@Get('/:id')
 	public async getBankAccount(
-		@GetUserData('id') userId: string,
 		@Param('id') id: string
 	): AsyncServiceResponseType<BankAccount> {
-		const bankAccount = await this.accountService.getBankAccountById(
-			id,
-			userId
-		);
+		const bankAccount = await this.accountService.getBankAccountById(id);
 
 		return bankAccount;
 	}

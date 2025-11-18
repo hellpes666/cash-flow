@@ -48,10 +48,9 @@ export class AccountService {
 	}
 
 	public async deleteBankAccount(
-		id: string,
-		userId: string
+		id: string
 	): AsyncServiceResponseType<BankAccount> {
-		const bankAccount = await this.getBankAccountById(id, userId);
+		const bankAccount = await this.getBankAccountById(id);
 
 		if (bankAccount.isSuccess) {
 			const deletedBankAccount =
@@ -72,13 +71,11 @@ export class AccountService {
 	}
 
 	public async getBankAccountById(
-		id: string,
-		userId: string
+		id: string
 	): AsyncServiceResponseType<BankAccount> {
 		const bankAccount = await this.prismaService.bankAccount.findUnique({
 			where: {
 				id,
-				userId,
 			},
 		});
 

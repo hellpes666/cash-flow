@@ -13,8 +13,14 @@ import { GetUserData } from 'src/decorators';
 
 import { AuthGuard } from '../auth';
 
-import { ActionsService } from './actions.service';
 import {
+	ActionsService,
+	GoalService,
+	StatisticsService,
+	TransactionService,
+} from './services';
+import {
+	GetActionStatisticDto,
 	SetGoalDto,
 	TransactionDto,
 	TransferValueBetweenBankAccountsDto,
@@ -24,17 +30,23 @@ import {
 @UseGuards(AuthGuard)
 @Controller('actions')
 export class ActionsController {
-	constructor(private readonly actionsService: ActionsService) {}
+	constructor(
+		private readonly actionsService: ActionsService,
+		private readonly goalService: GoalService,
+		private readonly transactionService: TransactionService,
+		private readonly statisticsService: StatisticsService
+	) {}
 
 	@Patch('bank-accounts/transfer')
 	public async transferValueBetweenBankAccounts(
-		@GetUserData('id') userId: string,
 		@Body() dto: TransferValueBetweenBankAccountsDto
 	) {
-		return await this.actionsService.transferValueBetweenBankAccounts(
-			dto,
-			userId
-		);
+		return await this.actionsService.transferValueBetweenBankAccounts(dto);
+	}
+
+	@Post('statistics')
+	public async getUserStatistics(@Body() dto: GetActionStatisticDto) {
+		return await this.statisticsService.getCommonStatistic(dto);
 	}
 
 	@Post('transaction/:action')
@@ -43,7 +55,11 @@ export class ActionsController {
 		@Param('action') action: TransactionType,
 		@Body() dto: TransactionDto
 	) {
-		return await this.actionsService.transactionAction(action, dto, userId);
+		return await this.transactionService.transactionAction(
+			action,
+			dto,
+			userId
+		);
 	}
 
 	@Post('set-goal')
@@ -51,7 +67,7 @@ export class ActionsController {
 		@GetUserData('id') userId: string,
 		@Body() dto: SetGoalDto
 	) {
-		return await this.actionsService.setGoal(dto, userId);
+		return await this.goalService.setGoal(dto, userId);
 	}
 
 	@Put('set-goal/:id')
@@ -61,6 +77,6 @@ export class ActionsController {
 		@Body() dto: UpdateSetGoalDto
 	) {
 		const extendedPayload = { ...dto, id };
-		return await this.actionsService.updateSetGoal(extendedPayload, userId);
+		return await this.goalService.updateSetGoal(extendedPayload, userId);
 	}
 }
