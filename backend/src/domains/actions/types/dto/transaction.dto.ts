@@ -9,10 +9,6 @@ import {
 export class TransactionDto {
 	@IsNotEmpty()
 	@IsUUID()
-	userId: string;
-
-	@IsNotEmpty()
-	@IsUUID()
 	bankAccountId: string;
 
 	@IsNotEmpty()

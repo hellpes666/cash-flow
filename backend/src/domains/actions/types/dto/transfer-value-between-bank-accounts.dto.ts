@@ -3,10 +3,6 @@ import { IsNotEmpty, IsNumber, IsOptional, IsUUID } from 'class-validator';
 export class TransferValueBetweenBankAccountsDto {
 	@IsNotEmpty()
 	@IsUUID()
-	userId: string;
-
-	@IsNotEmpty()
-	@IsUUID()
 	fromId: string;
 
 	@IsNotEmpty()

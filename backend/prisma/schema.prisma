@@ -22,11 +22,30 @@ model User {
   password String
 
   bankAccounts BankAccount[] @relation("user_bank_accounts")
+  userGoals    UserGoal[]    @relation("user_goals")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("users")
+}
+
+model UserGoal {
+  id String @id @default(uuid())
+
+  name      String?
+  goalValue Int      @map("goal_value")
+  startDate DateTime @map("start_date")
+  endDate   DateTime @map("end_date")
+  comment   String?
+
+  userId String @map("user_id")
+  user   User   @relation("user_goals", fields: [userId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("user_goals")
 }
 
 model BankAccount {
@@ -57,10 +76,10 @@ model TransactionAction {
 
   type TransactionType
 
-  categoryId String?              @default("") @map("category_id")
+  categoryId String?              @map("category_id")
   category   TransactionCategory? @relation(fields: [categoryId], references: [id])
 
-  tagId String?         @default("") @map("tag_id")
+  tagId String?         @map("tag_id")
   tag   TransactionTag? @relation(fields: [tagId], references: [id])
 
   bankAccountId String      @map("bank_account_id")
