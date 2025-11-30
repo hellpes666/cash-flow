@@ -31,6 +31,9 @@ export default tseslint.config(
             '@/no-console': 'warn',
             '@typescript-eslint/no-unused-vars': 'error',
             'prettier/prettier': ['error', { endOfLine: 'auto' }],
+            '@typescript-eslint/no-unsafe-call': 'off',
+            '@typescript-eslint/no-unsafe-member-access': 'off',
+            '@typescript-eslint/no-unsafe-assignment': 'off',
         },
     }
 );

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { Prisma, UserGoal } from 'prisma/generated/prisma';
-import { PrismaService } from 'src/lib';
+import { PrismaService, returnBasicAsyncEntity } from 'src/lib';
 import { AsyncServiceResponseType } from 'src/types';
 
 import { SetGoalPayload, UpdateSetGoalPayload } from '../types';
@@ -22,18 +22,10 @@ export class GoalService {
 			},
 		});
 
-		if (setGoal) {
-			return {
-				isSuccess: true,
-				data: setGoal,
-			};
-		}
-
-		return {
-			isSuccess: false,
-			errorMessage:
-				'Не удалось создать цель! Пожалуйста, попробуйте снова',
-		};
+		return returnBasicAsyncEntity(
+			setGoal,
+			'Не удалось создать цель! Пожалуйста, попробуйте снова'
+		);
 	}
 
 	public async updateSetGoal(
@@ -56,17 +48,12 @@ export class GoalService {
 			},
 		});
 
-		if (updatedUserGoal) {
-			return {
-				isSuccess: true,
-				data: updatedUserGoal,
-			};
-		}
-
-		return { isSuccess: false, errorMessage: 'Не удалось обновить цель' };
+		return returnBasicAsyncEntity(
+			updatedUserGoal,
+			'Не удалось обновить цель'
+		);
 	}
 
-	//TODO вынести во что-то общее
 	private async findSetGoal(
 		query: Prisma.UserGoalWhereUniqueInput
 	): AsyncServiceResponseType<UserGoal> {
@@ -74,16 +61,6 @@ export class GoalService {
 			where: query,
 		});
 
-		if (userGoal) {
-			return {
-				isSuccess: true,
-				data: userGoal,
-			};
-		}
-
-		return {
-			isSuccess: false,
-			errorMessage: 'Цель не найдена',
-		};
+		return returnBasicAsyncEntity(userGoal, 'Цель не найдена');
 	}
 }

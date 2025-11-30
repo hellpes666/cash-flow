@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { BankAccount } from 'prisma/generated/prisma';
-import { PrismaService } from 'src/lib';
+import { PrismaService, returnBasicAsyncEntity } from 'src/lib';
 import { AsyncServiceResponseType } from 'src/types';
 
 import { CreateBankAccountPayload, UpdateBankAccountPayload } from './types';
@@ -79,16 +79,9 @@ export class AccountService {
 			},
 		});
 
-		if (bankAccount) {
-			return {
-				isSuccess: true,
-				data: bankAccount,
-			};
-		}
-
-		return {
-			isSuccess: false,
-			errorMessage: 'Bank Account was not found!',
-		};
+		return returnBasicAsyncEntity<BankAccount>(
+			bankAccount,
+			'Bank Account was not found!'
+		);
 	}
 }
