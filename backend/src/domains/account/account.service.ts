@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { BankAccount } from 'prisma/generated/prisma';
-import { PrismaService } from 'src/lib';
+import { PrismaService, returnBasicAsyncEntity } from 'src/lib';
 import { AsyncServiceResponseType } from 'src/types';
 
 import { CreateBankAccountPayload, UpdateBankAccountPayload } from './types';
@@ -10,13 +10,14 @@ import { CreateBankAccountPayload, UpdateBankAccountPayload } from './types';
 export class AccountService {
 	public constructor(private readonly prismaService: PrismaService) {}
 
-	//TODO после реги добавить сюда проверку на пользвоаетля
 	public async createBankAccount(
-		payload: CreateBankAccountPayload
+		payload: CreateBankAccountPayload,
+		userId: string
 	): AsyncServiceResponseType<BankAccount> {
 		const bankAccount = await this.prismaService.bankAccount.create({
 			data: {
 				...payload,
+				userId,
 			},
 		});
 
@@ -27,11 +28,13 @@ export class AccountService {
 	}
 
 	public async updateBankAccount(
-		payload: UpdateBankAccountPayload
+		payload: UpdateBankAccountPayload,
+		userId: string
 	): AsyncServiceResponseType<BankAccount> {
 		const bankAccount = await this.prismaService.bankAccount.update({
 			where: {
 				id: payload.id,
+				userId,
 			},
 			data: {
 				...payload,
@@ -76,16 +79,9 @@ export class AccountService {
 			},
 		});
 
-		if (bankAccount) {
-			return {
-				isSuccess: true,
-				data: bankAccount,
-			};
-		}
-
-		return {
-			isSuccess: false,
-			errorMessage: 'Bank Account was not found!',
-		};
+		return returnBasicAsyncEntity<BankAccount>(
+			bankAccount,
+			'Bank Account was not found!'
+		);
 	}
 }

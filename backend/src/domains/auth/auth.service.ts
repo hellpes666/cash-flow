@@ -4,9 +4,10 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import type { Request, Response } from 'express';
 import { Prisma, User } from 'prisma/generated/prisma';
-import { PrismaService, isProduction } from 'src/lib';
+import { PrismaService, isProduction, returnBasicAsyncEntity } from 'src/lib';
 import {
 	AsyncServiceResponseType,
+	RequestData,
 	ServiceResponseType,
 	StatusServiceResponseType,
 } from 'src/types';
@@ -115,12 +116,11 @@ export class AuthService {
 		}
 
 		try {
-			const decoded = await this.jwtService.verifyAsync<{
-				email: string;
-				sub: string;
-			}>(cookies.refreshToken as string);
+			const decoded = await this.jwtService.verifyAsync<RequestData>(
+				cookies.refreshToken as string
+			);
 
-			const user = await this.findUser({ id: decoded.sub });
+			const user = await this.findUser({ id: decoded.id });
 
 			if (!user.isSuccess) {
 				return {
@@ -161,10 +161,10 @@ export class AuthService {
 		email: string,
 		userId: string
 	): AsyncServiceResponseType<{ accessToken: string }> {
-		const payloadJwt = { email, sub: userId };
+		const payloadJwt = { email, id: userId };
 
 		const accessToken = await this.jwtService.signAsync(payloadJwt, {
-			expiresIn: '15m',
+			expiresIn: '60m',
 		});
 
 		const refreshToken = await this.jwtService.signAsync(payloadJwt, {
@@ -223,16 +223,6 @@ export class AuthService {
 			where: query,
 		});
 
-		if (user) {
-			return {
-				isSuccess: true,
-				data: user,
-			};
-		}
-
-		return {
-			isSuccess: false,
-			errorMessage: 'Пользователь не найден',
-		};
+		return returnBasicAsyncEntity(user, 'Пользователь не найден');
 	}
 }

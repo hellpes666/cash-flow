@@ -1,6 +1,4 @@
 export interface TransactionPayload {
-	userId: string;
-
 	bankAccountId: string;
 
 	value: number;

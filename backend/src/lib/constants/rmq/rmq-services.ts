@@ -1,0 +1,1 @@
+export const RMQ_ORDERS_SERVICE = 'ORDERS_SERVICE';
