@@ -7,8 +7,10 @@ import {
 	ActionsModule,
 	AuthModule,
 	IntegrationsModule,
+	OrdersModule,
 	UserModule,
 } from './domains';
+import { PaymentModule } from './domains/payment/payment.module';
 import { PrismaModule } from './lib';
 
 @Module({
@@ -28,6 +30,9 @@ import { PrismaModule } from './lib';
 		ActionsModule,
 		AccountModule,
 		AuthModule,
+		PaymentModule,
+		OrdersModule,
+		// RmqModule,
 	],
 	controllers: [],
 	providers: [],

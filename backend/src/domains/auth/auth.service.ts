@@ -4,7 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import type { Request, Response } from 'express';
 import { Prisma, User } from 'prisma/generated/prisma';
-import { PrismaService, isProduction } from 'src/lib';
+import { PrismaService, isProduction, returnBasicAsyncEntity } from 'src/lib';
 import {
 	AsyncServiceResponseType,
 	RequestData,
@@ -223,16 +223,6 @@ export class AuthService {
 			where: query,
 		});
 
-		if (user) {
-			return {
-				isSuccess: true,
-				data: user,
-			};
-		}
-
-		return {
-			isSuccess: false,
-			errorMessage: 'Пользователь не найден',
-		};
+		return returnBasicAsyncEntity(user, 'Пользователь не найден');
 	}
 }

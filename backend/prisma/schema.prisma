@@ -23,11 +23,37 @@ model User {
 
   bankAccounts BankAccount[] @relation("user_bank_accounts")
   userGoals    UserGoal[]    @relation("user_goals")
+  userOrders   UserOrder[]   @relation("user_orders")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("users")
+}
+
+model UserOrder {
+  id String @id @default(uuid())
+
+  value       String
+  currency    String
+  description String?
+  status      UserOrderStatus
+
+  userId String @map("user_id")
+  user   User   @relation("user_orders", fields: [userId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("user_orders")
+}
+
+enum UserOrderStatus {
+  pending
+  succeeded
+  canceled
+
+  @@map("user_order_statuses")
 }
 
 model UserGoal {
