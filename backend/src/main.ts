@@ -35,7 +35,9 @@ async function bootstrap() {
 	app.connectMicroservice({
 		transport: Transport.RMQ,
 		options: {
-			urls: ['amqp://user:password@localhost:5672'],
+			urls: [
+				`amqp://${process.env.RABBITMQ_DEFAULT_USER}:${process.env.RABBITMQ_DEFAULT_PASS}@${process.env.RABBITMQ_DEFAULT_HOST}:5672`,
+			],
 			queue: RMQ_ORDERS_QUEUE,
 			prefetchCount: 10,
 			persistent: true,
