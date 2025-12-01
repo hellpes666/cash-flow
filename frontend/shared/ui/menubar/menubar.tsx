@@ -5,7 +5,7 @@ import * as React from 'react';
 import * as MenubarPrimitive from '@radix-ui/react-menubar';
 import { CheckIcon, ChevronRightIcon, CircleIcon } from 'lucide-react';
 
-import { cn } from '@shared/lib';
+import { cn } from '@/shared/lib';
 
 function Menubar({ className, ...props }: React.ComponentProps<typeof MenubarPrimitive.Root>) {
 	return (
@@ -235,19 +235,19 @@ function MenubarSubContent({
 
 export {
 	Menubar,
-	MenubarPortal,
-	MenubarMenu,
-	MenubarTrigger,
+	MenubarCheckboxItem,
 	MenubarContent,
 	MenubarGroup,
-	MenubarSeparator,
-	MenubarLabel,
 	MenubarItem,
-	MenubarShortcut,
-	MenubarCheckboxItem,
+	MenubarLabel,
+	MenubarMenu,
+	MenubarPortal,
 	MenubarRadioGroup,
 	MenubarRadioItem,
+	MenubarSeparator,
+	MenubarShortcut,
 	MenubarSub,
-	MenubarSubTrigger,
 	MenubarSubContent,
+	MenubarSubTrigger,
+	MenubarTrigger,
 };

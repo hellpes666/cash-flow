@@ -19,9 +19,9 @@
 			}
 		],
 		"paths": {
-			"@widgets/*": ["./widgets/*"],
-			"@features/*": ["./features/*"],
-			"@shared/*": ["./shared/*"],
+			"@/widgets/*": ["./widgets/*"],
+			"@/features/*": ["./features/*"],
+			"@/shared/*": ["./shared/*"],
 			"@/*": ["./*"]
 		}
 	},

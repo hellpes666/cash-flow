@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
-import { PageRoutes } from '@shared/constants';
-import { Button, ButtonGroup, TypographyH1, TypographyLead } from '@shared/ui';
+import { PageRoutes } from '@/shared/constants';
+import { Button, ButtonGroup, TypographyH1, TypographyLead } from '@/shared/ui';
 
 export default function Home() {
 	return (

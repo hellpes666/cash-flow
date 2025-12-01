@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
-import { PageRoutes } from '@shared/constants';
-import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from '@shared/ui';
+import { PageRoutes } from '@/shared/constants';
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from '@/shared/ui';
 
 export const NotFoundGlobalContent = () => {
 	return (

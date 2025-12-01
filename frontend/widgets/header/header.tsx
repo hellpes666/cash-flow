@@ -2,9 +2,8 @@ import Link from 'next/link';
 
 import { ArrowUpRightIcon } from 'lucide-react';
 
+import { PageRoutes } from '@/shared/constants';
 import { Button, TypographyH2 } from '@/shared/ui';
-
-import { PageRoutes } from '@shared/constants';
 
 export const Header = () => {
 	return (

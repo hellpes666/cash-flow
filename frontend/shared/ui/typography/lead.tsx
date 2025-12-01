@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import { cn } from '@shared/lib';
+import { cn } from '@/shared/lib';
 
 interface Props {
 	children: ReactNode;

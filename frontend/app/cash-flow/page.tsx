@@ -1,66 +1,40 @@
-import {
-	Avatar,
-	AvatarFallback,
-	AvatarImage,
-	Button,
-	Card,
-	CardContent,
-	CardDescription,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-	Empty,
-	EmptyDescription,
-	EmptyHeader,
-	EmptyMedia,
-	EmptyTitle,
-	Input,
-} from '@/shared/ui';
+import { QuickDashboardInfoCard } from '@/features';
+
+import { PageRoutes } from '@/shared/constants';
+
+const MOCK_DATA = [
+	{
+		title: 'Траты за месяц',
+		description: 'Топ категории: Покупки, Транспорт',
+		content: '222 100 ₽',
+		button: { content: 'Подробнее →', link: PageRoutes.DASHBOARDS },
+	},
+	{
+		title: 'Доход за месяц',
+		description: '+8% к прошлому месяцу',
+		content: '560 000 ₽',
+		button: { content: 'Аналитика', link: PageRoutes.ANALYTICS },
+	},
+	{
+		title: 'Общий баланс счетов',
+		description: 'Считается баланс со всех ваших счетов',
+		content: '10 560 000 ₽',
+		button: { content: 'Изучить детальнее', link: PageRoutes.BANK_ACCOUNTS },
+	},
+];
 
 //TODO это все фичи вынести туда + объединить в виджет
 export default function DashboardQuickView() {
 	return (
-		<div className="mt-12 h-full flex-col">
+		<div className="mt-12 h-full">
 			<section className="flex items-center gap-4">
-				<Card className="max-w-full min-w-[90vw] md:min-w-[30vw]">
-					<CardHeader>
-						<CardTitle>Траты за месяц</CardTitle>
-						<CardDescription>Топ категории: Покупки, Транспорт</CardDescription>
-					</CardHeader>
-					<CardContent>
-						<p className="text-2xl font-bold">222 100 ₽</p>
-					</CardContent>
-					<CardFooter className="flex justify-end">
-						<button className="text-primary hover:underline">Подробнее →</button>
-					</CardFooter>
-				</Card>
-				<Card className="max-w-full min-w-[90vw] md:min-w-[30vw]">
-					<CardHeader>
-						<CardTitle>Доход за месяц</CardTitle>
-						<CardDescription>+8% к прошлому месяцу</CardDescription>
-					</CardHeader>
-					<CardContent>
-						<p className="text-2xl font-bold">560 000 ₽</p>
-					</CardContent>
-					<CardFooter className="flex justify-end">
-						<button className="text-primary hover:underline">Аналитика</button>
-					</CardFooter>
-				</Card>
-				<Card className="max-w-full min-w-[90vw] md:min-w-[30vw]">
-					<CardHeader>
-						<CardTitle>Общий баланс счетов</CardTitle>
-						<CardDescription>Считается баланс со всех ваших счетов</CardDescription>
-					</CardHeader>
-					<CardContent>
-						<p className="text-2xl font-bold">10 560 000 ₽</p>
-					</CardContent>
-					<CardFooter className="flex justify-end">
-						<button className="text-primary hover:underline">Изучить детальнее</button>
-					</CardFooter>
-				</Card>
+				{MOCK_DATA.map((data, i) => {
+					return <QuickDashboardInfoCard key={i} {...data} />;
+				})}
 			</section>
 
-			<Card className="mx-auto mt-8 flex h-[450px] max-w-3xl flex-col hover:cursor-not-allowed">
+			{/* IMPLEMENT IT WHEN AI WILL ADD */}
+			{/* <Card className="mx-auto mt-8 flex h-[450px] max-w-3xl flex-col hover:cursor-not-allowed">
 				<CardHeader>
 					<CardTitle>Чат с ассистентом</CardTitle>
 				</CardHeader>
@@ -92,7 +66,7 @@ export default function DashboardQuickView() {
 						</Button>
 					</div>
 				</CardFooter>
-			</Card>
+			</Card> */}
 		</div>
 	);
 }
