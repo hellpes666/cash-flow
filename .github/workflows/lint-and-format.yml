@@ -1,84 +1,107 @@
 name: Lint and Format Check
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
 
 jobs:
-  detect-changes:
-    runs-on: ubuntu-latest
-    outputs:
-      backend: ${{ steps.filter.outputs.backend }}
-      frontend: ${{ steps.filter.outputs.frontend }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+    detect-changes:
+        runs-on: ubuntu-latest
+        outputs:
+            backend: ${{ steps.changes.outputs.backend }}
+            frontend: ${{ steps.changes.outputs.frontend }}
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
 
-      - uses: dorny/paths-filter@v3
-        id: filter
-        with:
-          filters: |
-            backend:
-              - 'backend/**'
-            frontend:
-              - 'frontend/**'
+            - name: Detect changes
+              id: changes
+              run: |
+                  if [ "${{ github.event_name }}" == "pull_request" ]; then
+                    BASE_SHA="${{ github.event.pull_request.base.sha }}"
+                    HEAD_SHA="${{ github.sha }}"
+                  else
+                    BASE_SHA="${{ github.event.before }}"
+                    HEAD_SHA="${{ github.sha }}"
+                  fi
 
-  lint-backend:
-    needs: detect-changes
-    if: needs.detect-changes.outputs.backend == 'true'
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./backend
+                  # Если BASE_SHA пустой или равен HEAD_SHA, проверяем все файлы
+                  if [ -z "$BASE_SHA" ] || [ "$BASE_SHA" == "0000000000000000000000000000000000000000" ] || [ "$BASE_SHA" == "$HEAD_SHA" ]; then
+                    CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD 2>/dev/null || git ls-files || echo "")
+                  else
+                    CHANGED_FILES=$(git diff --name-only $BASE_SHA $HEAD_SHA 2>/dev/null || echo "")
+                  fi
 
-    steps:
-      - uses: actions/checkout@v4
+                  if echo "$CHANGED_FILES" | grep -q "^backend/"; then
+                    echo "backend=true" >> $GITHUB_OUTPUT
+                  else
+                    echo "backend=false" >> $GITHUB_OUTPUT
+                  fi
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          cache: 'npm'
-          cache-dependency-path: backend/package-lock.json
+                  if echo "$CHANGED_FILES" | grep -q "^frontend/"; then
+                    echo "frontend=true" >> $GITHUB_OUTPUT
+                  else
+                    echo "frontend=false" >> $GITHUB_OUTPUT
+                  fi
 
-      - name: Install dependencies
-        run: npm ci
+                  echo "Changed files:"
+                  echo "$CHANGED_FILES"
 
-      - name: Run ESLint (check only)
-        run: npx eslint "{src,apps,libs,test}/**/*.ts" --max-warnings=0
+    lint-backend:
+        needs: detect-changes
+        if: needs.detect-changes.outputs.backend == 'true'
+        runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: ./backend
 
-      - name: Check Prettier formatting
-        run: npx prettier --check "src/**/*.ts" "test/**/*.ts" || (echo "❌ Prettier check failed. Run 'npm run format' to fix." && exit 1)
+        steps:
+            - uses: actions/checkout@v4
 
-  lint-frontend:
-    needs: detect-changes
-    if: needs.detect-changes.outputs.frontend == 'true'
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./frontend
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "18"
+                  cache: "npm"
+                  cache-dependency-path: backend/package-lock.json
 
-    steps:
-      - uses: actions/checkout@v4
+            - name: Install dependencies
+              run: npm ci
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
+            - name: Run ESLint (check only)
+              run: npx eslint "{src,apps,libs,test}/**/*.ts" --max-warnings=0
 
-      - name: Install dependencies
-        run: npm ci
+            - name: Check Prettier formatting
+              run: npx prettier --check "src/**/*.ts" "test/**/*.ts" || (echo "❌ Prettier check failed. Run 'npm run format' to fix." && exit 1)
 
-      - name: Run ESLint
-        run: npm run lint
+    lint-frontend:
+        needs: detect-changes
+        if: needs.detect-changes.outputs.frontend == 'true'
+        runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: ./frontend
 
-      - name: Check Prettier formatting
-        run: npx prettier --check "app/**/*.{ts,tsx}" "features/**/*.{ts,tsx}" "widgets/**/*.{ts,tsx}" "shared/**/*.{ts,tsx}" "*.{ts,tsx,json}" || (echo "❌ Prettier check failed. Run 'npx prettier --write' to fix." && exit 1)
+        steps:
+            - uses: actions/checkout@v4
 
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "18"
+                  cache: "npm"
+                  cache-dependency-path: frontend/package-lock.json
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Run ESLint
+              run: npm run lint
+
+            - name: Check Prettier formatting
+              run: npx prettier --check "app/**/*.{ts,tsx}" "features/**/*.{ts,tsx}" "widgets/**/*.{ts,tsx}" "shared/**/*.{ts,tsx}" "*.{ts,tsx,json}" || (echo "❌ Prettier check failed. Run 'npx prettier --write' to fix." && exit 1)
