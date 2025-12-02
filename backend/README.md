@@ -1,110 +1,196 @@
 # Cash Flow Backend
 
-Backend Cash Flow — это сервис управления личными финансами, отвечающий за доменную логику (пользователи, транзакции, категории, счета), валидацию данных и выдачу агрегированной информации для фронтенда.
+Backend сервис управления личными финансами на NestJS с микросервисной архитектурой.
 
-## Архитектура и подходы
+## 🚀 Быстрый старт
 
-- NestJS как основной фреймворк: модульная архитектура с разделением по доменам (Auth, Users, Accounts, Transactions, Categories, Analytics и т.д.).
-- Слой контроллеров (Controllers) принимает HTTP‑запросы, отвечает за маршрутизацию и маппинг входных/выходных DTO.  
-- Слой сервисов (Services) инкапсулирует бизнес‑логику: создание и изменение сущностей, расчёт агрегатов (баланс, итоги по периодам, статистика по категориям), подготовка данных для дашбордов. 
-- Слой доступа к данным реализован через ORM (например, Prisma) или репозитории, что обеспечивает прозрачную работу с БД и облегчает тестирование. 
+### Предварительные требования
 
-## Основные домены
+- Node.js 18+
+- Docker и Docker Compose
+- npm/yarn/pnpm
 
-- Пользователи (Users): регистрация, аутентификация, профили, настройки.
-- Счета (Accounts): кошельки, карты и другие источники/хранилища денег, используемые при учёте операций. 
-- Транзакции (Transactions): доходы и расходы с привязкой к счёту, категории, дате и дополнительным метаданным.
-- Категории (Categories): иерархия категорий расходов/доходов для более точного анализа cash flow. 
-- Аналитика (Analytics): агрегированные выборки и расчёты (итоги за период, графики движения денег, ключевые метрики). 
+### Установка
 
-## Паттерны и практики
+1. **Установите зависимости:**
 
-- Dependency Injection: стандартный DI NestJS для слабой связанности модулей и удобной подмены реализаций (например, репозиториев или адаптеров). 
-- Layered Architecture: разделение на слои (контроллеры → сервисы → слой данных) для читаемости и тестируемости.
-- DTO и валидация: входные и выходные данные описаны через DTO, валидация выполняется пайпами (class-validator / class-transformer), что защищает API и упрощает контракт между фронтом и бэком. 
-- Error Handling: централизованная обработка ошибок (HTTP‑фильтры, глобальные фильтры/интерсепторы) для единообразного формата ответов при ошибках. 
-- Конфигурация: использование конфигурационного модуля для работы с переменными окружения (ключи БД, секреты JWT, флаги окружений и т.п.).
+    ```bash
+    npm install
+    ```
 
-## Безопасность и доступ
+2. **Создайте файл `.env`:**
 
-- Авторизация и аутентификация через JWT (access/refresh токены) либо session‑подход (в зависимости от выбранной стратегии). 
-- Ролевая модель и/или права доступа на уровне маршрутов и доменных операций (guards и декораторы NestJS).
-- Логирование и аудит ключевых действий (создание/изменение транзакций, изменение настроек пользователя). 
+    ```env
+    POSTRGES_URI=postgresql://user:password@localhost:5436/cashflow
+    POSTGRES_USER=user
+    POSTGRES_PASSWORD=password
+    RABBITMQ_DEFAULT_USER=admin
+    RABBITMQ_DEFAULT_PASS=admin
+    RABBITMQ_DEFAULT_HOST=localhost
+    PORT=3000
+    JWT_SECRET=your-secret-key-here
+    ```
 
-## Работа с cash flow
+3. **Запустите инфраструктуру:**
 
-- Поддержка разных периодов анализа (день/неделя/месяц/год) для построения графиков и отчётов.
-- Расчёт текущего и прогнозируемого баланса на основе истории транзакций и запланированных операций. 
-- Подготовка данных для визуализаций на фронтенде (серии точек, агрегаты по категориям, сравнение периодов).
+    ```bash
+    docker-compose up -d
+    ```
 
+4. **Примените миграции:**
 
+    ```bash
+    npx prisma migrate dev
+    npx prisma generate
+    ```
 
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+5. **Запустите сервер:**
+    ```bash
+    npm run start:dev
+    ```
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Сервер будет доступен на `http://localhost:3000`
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 📁 Структура проекта
 
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
-
-```bash
-$ npm install
+```
+src/
+├── domains/          # Доменные модули (DDD)
+│   ├── auth/         # Аутентификация и авторизация
+│   ├── user/         # Управление пользователями
+│   ├── account/      # Банковские счета
+│   ├── actions/      # Транзакции и операции
+│   ├── orders/       # Заказы
+│   ├── payment/      # Платежи (YooKassa)
+│   └── integrations/ # Интеграции
+├── lib/              # Общие утилиты
+│   ├── prisma/       # Prisma сервис
+│   └── utils/        # Вспомогательные функции
+├── rmq/              # RabbitMQ интеграция
+│   ├── consumer/     # Потребители сообщений
+│   └── producer/     # Производители сообщений
+└── main.ts           # Точка входа
 ```
 
-## Compile and run the project
+## 🏛️ Архитектура
+
+### Используемые практики
+
+- **Domain-Driven Design (DDD)** — разделение по доменам
+- **Layered Architecture** — Controllers → Services → Data Access
+- **Dependency Injection** — стандартный DI NestJS
+- **Microservices** — RabbitMQ для межсервисного взаимодействия
+- **DTO Pattern** — валидация через class-validator
+- **Repository Pattern** — Prisma как слой доступа к данным
+
+### Доменные модули
+
+- **Auth** — JWT аутентификация, регистрация, логин
+- **User** — управление профилями пользователей
+- **Account** — банковские счета и кошельки
+- **Actions** — транзакции (доходы/расходы), цели, статистика
+- **Orders** — заказы пользователей
+- **Payment** — интеграция с YooKassa для платежей
+- **Integrations** — внешние интеграции
+
+## 🛠️ Технологический стек
+
+### Основные зависимости
+
+- **@nestjs/core** (^11.0.1) — фреймворк NestJS
+- **@nestjs/microservices** (^11.1.9) — микросервисы
+- **@prisma/client** (^6.18.0) — ORM для работы с БД
+- **@nestjs/jwt** (^11.0.1) — JWT аутентификация
+- **bcrypt** (^6.0.0) — хеширование паролей
+- **class-validator** (^0.14.2) — валидация DTO
+- **amqplib** (^0.10.9) — RabbitMQ клиент
+- **axios** (^1.13.2) — HTTP клиент
+
+### База данных
+
+- **PostgreSQL 17** — основная БД
+- **Prisma** — миграции и ORM
+- **RabbitMQ 3.13** — брокер сообщений
+
+## 📝 Скрипты
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm run start          # Запуск
+npm run start:dev      # Разработка с hot-reload
+npm run start:prod     # Продакшен
+npm run build          # Сборка
+npm run lint           # Линтинг
+npm run test           # Тесты
+npm run test:e2e       # E2E тесты
 ```
 
-## Run tests
+## 🔐 Безопасность
+
+- JWT токены для аутентификации
+- Хеширование паролей (bcrypt)
+- Валидация входных данных (class-validator)
+- CORS настройки
+- Guards для защиты маршрутов
+
+## 🐳 Docker
+
+Инфраструктура запускается через Docker Compose:
+
+- **PostgreSQL** — порт 5436
+- **RabbitMQ** — порты 5672 (AMQP), 15672 (Management UI)
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+docker-compose up -d        # Запуск
+docker-compose down         # Остановка
+docker-compose logs -f      # Логи
 ```
 
+## 📚 Документация по библиотекам
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### NestJS
 
-## Stay in touch
+- [Официальная документация](https://docs.nestjs.com/)
+- Модульная архитектура, декораторы, DI контейнер
+- Поддержка микросервисов, WebSockets, GraphQL
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
+### Prisma
 
-## License
+- [Документация](https://www.prisma.io/docs)
+- ORM с type-safe запросами
+- Миграции, генерация клиента
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+### RabbitMQ
+
+- [Документация](https://www.rabbitmq.com/documentation.html)
+- AMQP протокол для асинхронной коммуникации
+- Очереди, обменники, routing
+
+### JWT
+
+- [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken)
+- Access/Refresh токены
+- Время жизни токенов настраивается
+
+## 🔄 API Endpoints
+
+Основные эндпоинты организованы по доменам:
+
+- `/auth` — аутентификация
+- `/user` — пользователи
+- `/account` — счета
+- `/actions` — транзакции и статистика
+- `/orders` — заказы
+- `/payment` — платежи
+
+## 📦 Переменные окружения
+
+| Переменная              | Описание                     | Пример                                     |
+| ----------------------- | ---------------------------- | ------------------------------------------ |
+| `POSTRGES_URI`          | URI подключения к PostgreSQL | `postgresql://user:pass@localhost:5436/db` |
+| `POSTGRES_USER`         | Пользователь БД              | `user`                                     |
+| `POSTGRES_PASSWORD`     | Пароль БД                    | `password`                                 |
+| `RABBITMQ_DEFAULT_USER` | Пользователь RabbitMQ        | `admin`                                    |
+| `RABBITMQ_DEFAULT_PASS` | Пароль RabbitMQ              | `admin`                                    |
+| `RABBITMQ_DEFAULT_HOST` | Хост RabbitMQ                | `localhost`                                |
+| `PORT`                  | Порт приложения              | `3000`                                     |
+| `JWT_SECRET`            | Секретный ключ для JWT       | `your-secret-key`                          |
