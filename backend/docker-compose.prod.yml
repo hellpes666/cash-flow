@@ -1,6 +1,6 @@
 services:
     postgres:
-        container_name: cash-flow-db
+        container_name: cash-flow-db-prod
         image: postgres:17
         restart: always
         environment:
@@ -10,9 +10,9 @@ services:
         ports:
             - 5436:5432
         volumes:
-            - postgres_data:/var/lib/postgresql/data
+            - postgres_data_prod:/var/lib/postgresql/data
         networks:
-            - cash-flow
+            - cash-flow-prod
         healthcheck:
             test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER}']
             interval: 10s
@@ -21,7 +21,7 @@ services:
 
     rabbitmq:
         image: rabbitmq:3.13-management
-        container_name: cash-flow-rmq
+        container_name: cash-flow-rmq-prod
         restart: always
         ports:
             - '5672:5672'
@@ -30,7 +30,7 @@ services:
             - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
             - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
         networks:
-            - cash-flow
+            - cash-flow-prod
         healthcheck:
             test: ['CMD', 'rabbitmq-diagnostics', 'ping']
             interval: 10s
@@ -40,13 +40,13 @@ services:
     backend:
         build:
             context: .
-            dockerfile: Dockerfile.dev
-        container_name: cash-flow-backend-dev
-        restart: unless-stopped
+            dockerfile: Dockerfile.prod
+        container_name: cash-flow-backend-prod
+        restart: always
         ports:
             - '3000:3000'
         environment:
-            - NODE_ENV=development
+            - NODE_ENV=production
             - PORT=${PORT:-3000}
             - POSTGRES_USER=${POSTGRES_USER}
             - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -58,12 +58,8 @@ services:
             - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
             - RABBITMQ_DEFAULT_HOST=rabbitmq
             - JWT_SECRET=${JWT_SECRET}
-        volumes:
-            - .:/app
-            - /app/node_modules
-            - /app/dist
         networks:
-            - cash-flow
+            - cash-flow-prod
         depends_on:
             postgres:
                 condition: service_healthy
@@ -71,7 +67,7 @@ services:
                 condition: service_healthy
 
 volumes:
-    postgres_data:
+    postgres_data_prod:
 
 networks:
-    cash-flow:
+    cash-flow-prod:

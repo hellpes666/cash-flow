@@ -140,9 +140,10 @@ npm run test:e2e       # E2E тесты
 - **RabbitMQ** — порты 5672 (AMQP), 15672 (Management UI)
 
 ```bash
-docker-compose up -d        # Запуск
-docker-compose down         # Остановка
-docker-compose logs -f      # Логи
+# Для разработки:
+docker-compose up -d
+# Для продакшена:
+docker-compose -f docker-compose.prod.yml up -d
 ```
 
 ## 📚 Документация по библиотекам
